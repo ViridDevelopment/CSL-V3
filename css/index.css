@@ -17,6 +17,7 @@
 
 body {
     background: linear-gradient(135deg, #00eeff, #ff0000, #00eeff, #ff0000);
+    transition: background 0.3s ease;
     color: white;
     margin: 0;
     padding: 0;

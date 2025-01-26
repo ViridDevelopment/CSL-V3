@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700");
 
 body {
-    background: linear-gradient(120deg, rgb(2, 2, 2), rgb(79, 79, 79));
+    background: linear-gradient(135deg, #00eeff, #ff0000);
     color: white;
     margin: 0;
     padding: 0;

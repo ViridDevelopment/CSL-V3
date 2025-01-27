@@ -678,3 +678,142 @@ if (data.success) {
     // Call this function when the page loads
     updateMaxFileSize();
 });
+
+// tweaking area
+document.addEventListener('DOMContentLoaded', function() {
+    var customizationModal = document.getElementById("customizationMenuModal");
+    var customizationButton = document.getElementById("customizationMenuButton");
+    var closeSpan = customizationModal.getElementsByClassName("close")[0];
+
+    customizationButton.onclick = function() {
+        customizationModal.style.display = "block";
+        document.body.classList.add('modal-open'); // Add blur effect
+    }
+
+    closeSpan.onclick = function() {
+        customizationModal.style.display = "none";
+        document.body.classList.remove('modal-open'); // Remove blur effect
+    }
+
+    window.onclick = function(event) {
+        if (event.target == customizationModal) {
+            customizationModal.style.display = "none";
+            document.body.classList.remove('modal-open'); // Remove blur effect
+        }
+    }
+});
+
+    // Accordion for Cyan Tweaks
+    const acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        const panel = this.nextElementSibling;
+        const arrow = this.querySelector(".arrow");
+        if (panel.style.maxHeight) {
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxContainers = document.querySelectorAll('.checkbox-container');
+    
+        checkboxContainers.forEach(container => {
+            const checkbox = container.querySelector('input[type="checkbox"]');
+            
+            container.addEventListener('click', () => {
+                checkbox.checked = !checkbox.checked; // Toggle checkbox state
+                container.classList.toggle('active', checkbox.checked); // Toggle active class
+            });
+        });
+    });
+
+// animation for compression
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownContainers = document.querySelectorAll('.dropdown-container');
+
+    dropdownContainers.forEach(container => {
+        const button = container.querySelector('.dropdown-button');
+        const content = container.querySelector('.dropdown-content');
+
+        button.addEventListener('click', () => {
+            container.classList.toggle('active');
+        });
+
+        // Close the dropdown if clicked outside
+        window.addEventListener('click', (event) => {
+            if (!container.contains(event.target)) {
+                container.classList.remove('active');
+            }
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.querySelector('.dropdown-toggle-button');
+    const dropdownContainer = document.querySelector('.dropdown-container');
+
+    if (toggleButton && dropdownContainer) {
+        toggleButton.addEventListener('click', () => {
+            dropdownContainer.classList.toggle('hidden');
+        });
+
+        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
+        dropdownOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                dropdownOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                const selectedValue = option.getAttribute('data-value');
+                console.log('Selected Compression Level:', selectedValue);
+                dropdownContainer.classList.add('hidden'); // Hide after selection
+            });
+        });
+    } else {
+        console.error('Toggle button or dropdown container not found');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
+    dropdownOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            dropdownOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            // You can handle the selected value here
+            const selectedValue = option.getAttribute('data-value');
+            console.log('Selected Compression Level:', selectedValue);
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const overwriteContainer = document.getElementById('cyan_overwrite_container');
+    const checkbox = document.getElementById('overwriteCheckbox');
+
+    // Initialize the container state
+    overwriteContainer.classList.toggle('active', checkbox.checked);
+    overwriteContainer.classList.toggle('inactive', !checkbox.checked);
+
+    overwriteContainer.addEventListener('click', function() {
+        checkbox.checked = !checkbox.checked; // Toggle checkbox state
+        overwriteContainer.classList.toggle('active', checkbox.checked); // Toggle active class
+        overwriteContainer.classList.toggle('inactive', !checkbox.checked); // Toggle inactive class
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('.custom-file-input input[type="file"]');
+
+    fileInputs.forEach((input) => {
+        input.addEventListener('change', function(event) {
+            const fileName = event.target.files[0] ? event.target.files[0].name : 'No file chosen';
+            const label = input.nextElementSibling; // Get the label next to the input
+            label.textContent = fileName; // Update the label text with the file name
+        });
+    });
+});

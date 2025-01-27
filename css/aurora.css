@@ -1036,8 +1036,9 @@ input[type="text"] {
 }
 
 .popup-content {
+    box-shadow: 0 0 15px rgba(94, 115, 188, 0.7), 0 0 30px rgba(94, 115, 188, 0.5);
     background-color: var(--login-bg);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(10px);
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -1049,15 +1050,15 @@ input[type="text"] {
 }
 .close {
     color: #aaa;
-    float: right;
+    float: left;
     font-size: 28px;
     font-weight: bold;
-    cursor: pointer;
+    margin-right: 10px;
 }
 
 .close:hover,
 .close:focus {
-    color: #fff;
+    color: rgb(255, 6, 6);
     text-decoration: none;
     cursor: pointer;
 }
@@ -1716,3 +1717,231 @@ body.normal-mode::before {
     padding: 0 20px;
 }
 
+/* tweaking css */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  .modal-content {
+    filter: none; /* Ensure the modal content is not blurred */
+    box-shadow: 0 0 15px rgba(104, 7, 230, 0.7), 0 0 30px rgba(94, 115, 188, 0.5);
+    background-color: var(--form-bg);
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    backdrop-filter: blur(40px);
+  }
+  
+  .close {
+    color: #aaa;
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: rgb(255, 6, 6);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+.card {
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: var(--form-bg);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.styled-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: var(--form-bg);
+  font-size: 16px;
+  color: var(--text-color);
+  appearance: none; /* Remove default arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.styled-select:focus {
+  border-color: #5e73bc;
+  box-shadow: 0 0 5px rgba(94, 115, 188, 0.5);
+  outline: none;
+}
+
+.styled-select option {
+  background-color: #fff;
+  color: #333;
+}
+
+.dropdown-container {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.dropdown-button {
+  background-color: #eee;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-button:hover {
+  background-color: #ddd;
+}
+
+.dropdown-content {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--form-bg);
+  border-radius: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 10px;
+  z-index: 1;
+}
+
+.dropdown-option {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-option:hover {
+  background-color: var(--button-hover);
+}
+
+.dropdown-option.active {
+  background-color: #662af1;
+}
+
+body.modal-open .content-to-blur {
+  filter: blur(5px);
+  transition: filter 0.3s ease;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.checkbox-container.active {
+    background-color: rgb(0, 156, 13);
+}
+
+.checkbox-container.inactive {
+    background-color: rgba(255, 0, 0, 0.137);
+}
+
+.custom-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #eee;
+    border-radius: 4px;
+    position: relative;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+    border: 1px solid #ccc;
+}
+
+.custom-checkbox:checked {
+    background-color: #2af13b;
+}
+
+.custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.custom-file-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px; /* Add spacing above the button */
+}
+
+.custom-file-input input[type="file"] {
+    display: none; /* Hide the default file input */
+}
+
+.custom-file-input label {
+    background-color: var(--button-bg); /* Use the button background color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.custom-file-input label:hover {
+    background-color: var(--button-hover); /* Change background on hover */
+}
+
+.styled-button {
+    background-color: #000; /* Example background color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.styled-button:hover {
+    background-color: #333; /* Change background on hover */
+}

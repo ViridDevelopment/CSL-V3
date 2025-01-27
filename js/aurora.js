@@ -350,39 +350,18 @@ function handleRegistrationError(error) {
     }
 
     if (authForm) {
-        authForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+        authForm.addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            console.log("Login form submitted"); // Debug log
+
             const username = document.getElementById("auth-username").value;
             const password = document.getElementById("auth-password").value;
 
-            if (!isLoginMode && !agreePrivacyPolicyCheckbox.checked) {
-                showNotification("You must agree to the Privacy Policy to sign up.", "error");
-                return;
-            }
-
-            if (isLoginMode) {
-                const user = await db.loginUser(username, password);
-                if (user) {
-                    currentUser = {
-                        username: user.username,
-                        premium: user.premium, 
-                        isDev: user.isDev
-                    };
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    showNotification("Logged in successfully!", "success");
-                    authPopup.style.display = "none";
-                    checkLoginStatus();
-                } else {
-                    showNotification("Invalid username or password", "error");
-                }
-            } else {
-                const success = await registerUser(username, password);
-                if (success) {
-                    showNotification("Account created successfully! You can now log in.", "success");
-                    // The UI is already updated in the registerUser function
-                }
-            }
+            // Call the login function
+            await loginUser(username, password);
         });
+    } else {
+        console.error("Auth form not found!"); // Debug log if form is not found
     }
 
         async function registerUser(username, password) {
@@ -629,7 +608,7 @@ if (data.success) {
 
     const toggleAuthPassword = document.getElementById("toggleAuthPassword");
 
-/*if (toggleAuthPassword) {
+if (toggleAuthPassword) {
     toggleAuthPassword.addEventListener("click", function() {
         const passwordInput = document.getElementById("auth-password");
         const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
@@ -639,7 +618,7 @@ if (data.success) {
     });
 } else {
     console.warn("Element with ID 'toggleAuthPassword' not found in DOM.");
-}*/
+}
 
     function showPrivacyPolicy() {
         document.getElementById('authForm').classList.add('hidden');

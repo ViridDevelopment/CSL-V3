@@ -182,8 +182,8 @@
                         </div>
 
                         <div class="card">
-                            <label class="checkbox-container" id="cyan_overwrite_container">
-                                <input type="checkbox" id="overwriteCheckbox" class="custom-checkbox" hidden>
+                            <label class="overwrite-checkbox-container">
+                                <input type="checkbox" id="overwriteCheckbox" class="custom-checkbox">
                                 Overwrite existing files
                             </label>
                         </div>
@@ -209,18 +209,22 @@
                 </div>
             </form>
         </main>
-    <div id="authPopup" class="popup">
-        <div class="popup-content">
-            <span class="close">&times;</span>
-            <h2 id="authTitle">Login</h2>
-            <form id="authForm">
-                <input type="text" id="auth-username" placeholder="Enter your username" required autocomplete="username">
-                <input type="password" id="auth-password" placeholder="Enter your password" required autocomplete="current-password">
-                <button type="submit" id="authSubmit">Login</button>
-            </form>
-            <p id="authToggle">Don't have an account? <a href="#">Sign Up</a></p>
-        </div>
-    </div>
+            <div id="authPopup" class="popup">
+                <div class="popup-content">
+                    <span class="close">&times;</span>
+                    <h2 id="authTitle">Sign Up</h2>
+                    <form id="authForm">
+                        <input type="text" id="auth-username" placeholder="Enter your username" required autocomplete="username">
+                        <input type="password" id="auth-password" placeholder="Enter your password" required autocomplete="current-password">
+                        <div id="privacyPolicyAgreement">
+                            <input type="checkbox" id="agreePrivacyPolicy" required>
+                            <label for="agreePrivacyPolicy">I have read and agree to the <a href="/legal.html">Privacy Policy</a></label>
+                        </div>
+                        <button type="submit" id="authSubmit">Sign Up</button>
+                    </form>
+                    <p id="authToggle">Already have an account? <a href="#">Login</a></p>
+                </div>
+            </div>
 
     <div id="adminPanel" class="admin-panel hidden">
         <h2>Admin Panel</h2>

@@ -271,25 +271,22 @@ function isWithinLastYear(date) {
 
 window.toggleAdminPanel = toggleAdminPanel;
 
-async function downloadLogs(database) {
+async function downloadLogs() {
     try {
         const response = await fetch('https://admin.aurorasigner.xyz/api.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'getLogsAndStats' }),
         });
-
+        
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-        }
-
+        }s
+        
         const data = await response.json();
-
+        
         if (data.success) {
-            await database.storeLogs(data.logs);
-            await database.storeStats(data.stats);
-
             const csvContent = generateCSV(data.logs, data.stats);
             downloadCSV(csvContent, 'logs_and_stats.csv');
         } else {

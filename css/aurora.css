@@ -465,7 +465,9 @@ body.normal-mode::before {
     left: 0;
     right: 0;
     bottom: 0;
+    background: linear-gradient(135deg, #00eeff, #ff0000, #00eeff, #ff0000);
     background-size: 800% 800%;
+    animation: gradientAnimation 30s ease infinite;
     z-index: -1;
 }
 
@@ -1862,7 +1864,7 @@ body.modal-open .content-to-blur {
   display: none;
 }
 
-.checkbox-container {
+.tweak-checkbox-container {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -1873,11 +1875,11 @@ body.modal-open .content-to-blur {
     transition: background-color 0.3s ease;
 }
 
-.checkbox-container.active {
+.tweak-checkbox-container.active {
     background-color: rgb(0, 156, 13);
 }
 
-.checkbox-container.inactive {
+.tweak-checkbox-container.active.inactive {
     background-color: rgba(255, 0, 0, 0.137);
 }
 
@@ -1889,8 +1891,8 @@ body.modal-open .content-to-blur {
     border-radius: 4px;
     position: relative;
     margin-right: 10px;
-    transition: background-color 0.3s ease;
     border: 1px solid #ccc;
+    transition: background-color 0.3s ease;
 }
 
 .custom-checkbox:checked {
@@ -1944,4 +1946,49 @@ body.modal-open .content-to-blur {
 
 .styled-button:hover {
     background-color: #333; /* Change background on hover */
+}
+
+.overwrite-checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.overwrite-checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.overwrite-checkbox-container input[type="checkbox"]:checked {
+    background-color: #662af1;
+}
+
+.overwrite-checkbox-container input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
 }

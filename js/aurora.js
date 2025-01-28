@@ -40,16 +40,23 @@ function updateUIForUser(user) {
 
         if (user.isDev) {
             usernameDisplay.innerHTML += ' <span class="dev-badge">DEV</span>';
-            devButton.classList.remove('hidden');
-            devButton.addEventListener('click', toggleAdminPanel);
+            if (devButton) {
+                devButton.classList.remove("hidden");
+                devButton.addEventListener('click', toggleAdminPanel);
+            }
         } else {
-            devButton.classList.add('hidden');
-            devButton.removeEventListener('click', toggleAdminPanel);
+            if (devButton) {
+                devButton.classList.add("hidden");
+                devButton.removeEventListener('click', toggleAdminPanel);
+            }
         }
     } else {
         userInfo.classList.add('hidden');
-        devButton.classList.add('hidden');
-        devButton.removeEventListener('click', toggleAdminPanel);
+        usernameDisplay.textContent = '';
+        if (devButton) {
+            devButton.classList.add("hidden");
+            devButton.removeEventListener('click', toggleAdminPanel);
+        }
         linkDurationInfo.textContent = '';
     }
 }
@@ -116,33 +123,11 @@ function checkLoginStatus() {
 
     if (currentUser) {
         if (signInButton) signInButton.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
-        if (userInfo) userInfo.classList.remove("hidden");
-        if (usernameDisplay) {
-            usernameDisplay.textContent = currentUser.username;
-            if (currentUser.premium) {
-                usernameDisplay.innerHTML += ' <span class="premium-badge">Premium</span>';
-                linkDurationInfo.textContent = 'Links last for 4 months because you have premium';
-            } else {
-                linkDurationInfo.textContent = 'Links last for 1 month';
-            }
-            if (currentUser.isDev) {
-                usernameDisplay.innerHTML += ' <span class="dev-badge">DEV</span>';
-            }
-        }
-        if (currentUser.isDev && devButton) {
-            devButton.classList.remove("hidden");
-            devButton.addEventListener('click', toggleAdminPanel);
-        } else if (devButton) {
-            devButton.classList.add("hidden");
-        }
+        updateUIForUser(currentUser);
     } else {
         if (signInButton) signInButton.innerHTML = '<i class="fas fa-sign-in-alt"></i>';
-        if (userInfo) userInfo.classList.add("hidden");
-        if (usernameDisplay) usernameDisplay.textContent = "";
-        if (devButton) devButton.classList.add("hidden");
-        linkDurationInfo.textContent = '';
+        updateUIForUser(null);
     }
-    // Dispatch a custom event when login status changes
     document.dispatchEvent(new Event('loginStatusChanged'));
     updateMaxFileSize();
 }
@@ -214,14 +199,13 @@ function toggleAdminPanel() {
         console.error('Admin panel element not found');
         return;
     }
-    adminPanel.classList.toggle('hidden');
 
-    if (!adminPanel.classList.contains('hidden')) {
-        adminPanel.style.display = 'block'; // Force display
-        loadUsers(); // Implement this function if needed
+    const isHidden = adminPanel.classList.toggle('hidden');
+
+    if (!isHidden) {
+        // Admin panel is now visible
+        loadUsers(); // Ensure this function is defined
         addCloseButtonToAdminPanel();
-    } else {
-        adminPanel.style.display = 'none'; // Force hide
     }
 }
 

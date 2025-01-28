@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     let rotation = 0;
-    let isLoginMode = false;
+    let isLoginMode = true;
     let currentUser = null;
 
     function createSnowflakes() {
@@ -178,6 +178,13 @@ if (button) {
 } else {
     console.warn("Submit button not found in the form.");
 }
+
+        // Check if resultDiv exists before setting textContent
+        if (resultDiv) {
+            resultDiv.textContent = "";
+        } else {
+            console.warn("Result div not found in the DOM.");
+        }
 
         try {
             console.log("Sending signing request to API...");
@@ -343,7 +350,7 @@ function handleRegistrationError(error) {
             isLoginMode = !isLoginMode;
             authTitle.textContent = isLoginMode ? "Login" : "Sign Up";
             authSubmit.textContent = isLoginMode ? "Login" : "Sign Up";
-            authToggle.innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#">Sign Up</a>' : 'Already have an account? <a href="#">Login</a>';
+            authToggle.innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#" id="showSignUp">Sign Up</a>' : 'Already have an account? <a href="#" id="showLogin">Login</a>';
             privacyPolicyAgreement.style.display = isLoginMode ? "none" : "block";
             agreePrivacyPolicyCheckbox.required = !isLoginMode;
         });
@@ -357,8 +364,33 @@ function handleRegistrationError(error) {
             const username = document.getElementById("auth-username").value;
             const password = document.getElementById("auth-password").value;
 
-            // Call the login function
-            await loginUser(username, password);
+            if (!isLoginMode && !document.getElementById("agreePrivacyPolicyCheckbox").checked) {
+                showNotification("You must agree to the Privacy Policy to sign up.", "error");
+                return;
+            }
+
+            if (isLoginMode) {
+                const user = await db.loginUser(username, password);
+                if (user) {
+                    currentUser = {
+                        username: user.username,
+                        premium: user.premium, 
+                        isDev: user.isDev
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    updateUIForLoggedInUser();
+                    showNotification("Logged in successfully!", "success");
+                    authPopup.style.display = "none";
+                    checkLoginStatus();
+                } else {
+                    showNotification("Invalid username or password", "error");
+                }
+            } else {
+                const success = await registerUser(username, password);
+                if (success) {
+                    showNotification("Account created successfully! You can now log in.", "success");
+                }
+            }
         });
     } else {
         console.error("Auth form not found!"); // Debug log if form is not found
@@ -380,7 +412,7 @@ if (data.success) {
     isLoginMode = true;
     authTitle.textContent = "Login";
     authSubmit.textContent = "Login";
-    authToggle.innerHTML = 'Don\'t have an account? <a href="#">Sign Up</a>';
+    authToggle.innerHTML = 'Don\'t have an account? <a href="#" id="showSignUp">Sign Up</a>';
     privacyPolicyAgreement.style.display = "none";
     agreePrivacyPolicyCheckbox.required = false;
     return true;
@@ -548,6 +580,18 @@ if (data.success) {
             showNotification('Login successful!', 'success');
         } else {
             showNotification('Login failed. Please check your credentials.', 'error');
+        }
+    }
+
+    function updateUIForLoggedInUser() {
+        const userInfo = document.getElementById('userInfo');
+        const usernameDisplay = document.getElementById('username-display');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (currentUser) {
+            userInfo.classList.remove('hidden');
+            usernameDisplay.textContent = currentUser.username;
+            // Additional UI updates can be added here
         }
     }
 
@@ -796,3 +840,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+

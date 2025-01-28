@@ -134,18 +134,12 @@
                     />
                     <i class="fas fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 60px;"></i>
                 </div>
-               <button type="submit (alpha)">
-                    <i class="fas fa-sign-in-alt"></i> Sign IPA
-                </button>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> Sign IPA</button>
                 <p id="linkDuration" class="link-duration-info"></p>
                 <div id="progressBarContainer" class="hidden">
                     <div id="progressBar"></div>
                     <div id="progressText">0%</div>
                 </div>
-            </form>
-            <div id="loader" class="loader hidden"></div>
-            <div id="result"></div>
-        </div>
 
                 <button type="button" id="customizationMenuButton" class="styled-button">
                     <i class="fas fa-cogs"></i> Advanced Menu
@@ -222,6 +216,7 @@
                     <form id="authForm">
                         <input type="text" id="auth-username" placeholder="Enter your username" required autocomplete="username">
                         <input type="password" id="auth-password" placeholder="Enter your password" required autocomplete="current-password">
+                        <i class="fas fa-eye" id="toggleAuthPassword" style="position: absolute; right: -300px; top: 110px;"></i>
                         <div id="privacyPolicyAgreement">
                             <input type="checkbox" id="agreePrivacyPolicy" required>
                             <label for="agreePrivacyPolicy">I have read and agree to the <a href="/legal.html">Privacy Policy</a></label>

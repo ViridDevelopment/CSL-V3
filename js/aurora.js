@@ -465,14 +465,18 @@ if (data.success) {
         adminPanel.classList.toggle('hidden');
         console.log('Admin panel after toggle:', adminPanel.classList.contains('hidden'));
         
+        // Check the current display style
+        console.log('Current display style:', adminPanel.style.display);
+
+        // Optional: Force display if not hidden
         if (!adminPanel.classList.contains('hidden')) {
+            adminPanel.style.display = 'block'; // Ensure it is displayed
             console.log('Admin panel should be visible now');
-            adminPanel.style.display = 'block'; // Force display
             loadUsers();
             addCloseButtonToAdminPanel();
         } else {
+            adminPanel.style.display = 'none'; // Ensure it is hidden
             console.log('Admin panel should be hidden now');
-            adminPanel.style.display = 'none'; // Force hide
         }
     }
 

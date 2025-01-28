@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 }); 
 
-function addNoCacheToFetch() {
+unction addNoCacheToFetch() {
     const originalFetch = window.fetch;
     window.fetch = function() {
         if (arguments[0] instanceof Request) {
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     let rotation = 0;
-    let isLoginMode = true;
+    let isLoginMode = false;
     let currentUser = null;
 
     function createSnowflakes() {
@@ -178,13 +178,6 @@ if (button) {
 } else {
     console.warn("Submit button not found in the form.");
 }
-
-        // Check if resultDiv exists before setting textContent
-        if (resultDiv) {
-            resultDiv.textContent = "";
-        } else {
-            console.warn("Result div not found in the DOM.");
-        }
 
         try {
             console.log("Sending signing request to API...");
@@ -350,21 +343,19 @@ function handleRegistrationError(error) {
             isLoginMode = !isLoginMode;
             authTitle.textContent = isLoginMode ? "Login" : "Sign Up";
             authSubmit.textContent = isLoginMode ? "Login" : "Sign Up";
-            authToggle.innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#" id="showSignUp">Sign Up</a>' : 'Already have an account? <a href="#" id="showLogin">Login</a>';
+            authToggle.innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#">Sign Up</a>' : 'Already have an account? <a href="#">Login</a>';
             privacyPolicyAgreement.style.display = isLoginMode ? "none" : "block";
             agreePrivacyPolicyCheckbox.required = !isLoginMode;
         });
     }
 
     if (authForm) {
-        authForm.addEventListener("submit", async function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            console.log("Login form submitted"); // Debug log
-
+        authForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
             const username = document.getElementById("auth-username").value;
             const password = document.getElementById("auth-password").value;
 
-            if (!isLoginMode && !document.getElementById("agreePrivacyPolicyCheckbox").checked) {
+            if (!isLoginMode && !agreePrivacyPolicyCheckbox.checked) {
                 showNotification("You must agree to the Privacy Policy to sign up.", "error");
                 return;
             }
@@ -388,11 +379,10 @@ function handleRegistrationError(error) {
                 const success = await registerUser(username, password);
                 if (success) {
                     showNotification("Account created successfully! You can now log in.", "success");
+                    // The UI is already updated in the registerUser function
                 }
             }
         });
-    } else {
-        console.error("Auth form not found!"); // Debug log if form is not found
     }
 
         async function registerUser(username, password) {
@@ -411,7 +401,7 @@ if (data.success) {
     isLoginMode = true;
     authTitle.textContent = "Login";
     authSubmit.textContent = "Login";
-    authToggle.innerHTML = 'Don\'t have an account? <a href="#" id="showSignUp">Sign Up</a>';
+    authToggle.innerHTML = 'Don\'t have an account? <a href="#">Sign Up</a>';
     privacyPolicyAgreement.style.display = "none";
     agreePrivacyPolicyCheckbox.required = false;
     return true;
@@ -574,10 +564,9 @@ if (data.success) {
         const user = await db.loginUser(sanitizedUsername, password);
         if (user) {
             currentUser = user;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUIForLoggedInUser();
+            closeAuthPopup();
             showNotification('Login successful!', 'success');
-            authPopup.style.display = "none";
-            checkLoginStatus();
         } else {
             showNotification('Login failed. Please check your credentials.', 'error');
         }
@@ -640,7 +629,7 @@ if (data.success) {
 
     const toggleAuthPassword = document.getElementById("toggleAuthPassword");
 
-if (toggleAuthPassword) {
+/*if (toggleAuthPassword) {
     toggleAuthPassword.addEventListener("click", function() {
         const passwordInput = document.getElementById("auth-password");
         const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
@@ -650,7 +639,7 @@ if (toggleAuthPassword) {
     });
 } else {
     console.warn("Element with ID 'toggleAuthPassword' not found in DOM.");
-}
+}*/
 
     function showPrivacyPolicy() {
         document.getElementById('authForm').classList.add('hidden');
@@ -689,7 +678,6 @@ if (toggleAuthPassword) {
     // Call this function when the page loads
     updateMaxFileSize();
 });
-
 // tweaking area
 document.addEventListener('DOMContentLoaded', function() {
     var customizationModal = document.getElementById("customizationMenuModal");

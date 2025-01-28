@@ -678,6 +678,8 @@ if (data.success) {
     // Call this function when the page loads
     updateMaxFileSize();
 });
+
+
 // tweaking area
 document.addEventListener('DOMContentLoaded', function() {
     var customizationModal = document.getElementById("customizationMenuModal");

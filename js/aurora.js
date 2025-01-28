@@ -378,7 +378,6 @@ function handleRegistrationError(error) {
                         isDev: user.isDev
                     };
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    updateUIForLoggedInUser();
                     showNotification("Logged in successfully!", "success");
                     authPopup.style.display = "none";
                     checkLoginStatus();
@@ -575,23 +574,12 @@ if (data.success) {
         const user = await db.loginUser(sanitizedUsername, password);
         if (user) {
             currentUser = user;
-            updateUIForLoggedInUser();
-            closeAuthPopup();
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             showNotification('Login successful!', 'success');
+            authPopup.style.display = "none";
+            checkLoginStatus();
         } else {
             showNotification('Login failed. Please check your credentials.', 'error');
-        }
-    }
-
-    function updateUIForLoggedInUser() {
-        const userInfo = document.getElementById('userInfo');
-        const usernameDisplay = document.getElementById('username-display');
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-        if (currentUser) {
-            userInfo.classList.remove('hidden');
-            usernameDisplay.textContent = currentUser.username;
-            // Additional UI updates can be added here
         }
     }
 
@@ -840,3 +828,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+

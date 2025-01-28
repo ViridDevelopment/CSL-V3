@@ -455,41 +455,6 @@ if (data.success) {
         updateMaxFileSize();
     }
 
-    function toggleAdminPanel() {
-        const adminPanel = document.getElementById('adminPanel');
-        if (!adminPanel) {
-            console.error('Admin panel element not found');
-            return;
-        }
-        console.log('Admin panel before toggle:', adminPanel.classList.contains('hidden'));
-        adminPanel.classList.toggle('hidden');
-        console.log('Admin panel after toggle:', adminPanel.classList.contains('hidden'));
-        
-        if (!adminPanel.classList.contains('hidden')) {
-            console.log('Admin panel should be visible now');
-            adminPanel.style.display = 'block'; // Force display
-            loadUsers();
-            addCloseButtonToAdminPanel();
-        } else {
-            console.log('Admin panel should be hidden now');
-            adminPanel.style.display = 'none'; // Force hide
-        }
-    }
-
-    function addCloseButtonToAdminPanel() {
-        const adminPanel = document.getElementById('adminPanel');
-        if (!adminPanel) return;
-
-        let closeButton = adminPanel.querySelector('.close-button');
-        if (!closeButton) {
-            closeButton = document.createElement('button');
-            closeButton.className = 'close-button';
-            closeButton.innerHTML = '&times;';
-            closeButton.onclick = toggleAdminPanel;
-            adminPanel.insertBefore(closeButton, adminPanel.firstChild);
-        }
-    }
-
     function checkAdminPanel() {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         const adminPanel = document.getElementById('adminPanel');
@@ -584,9 +549,9 @@ if (data.success) {
             
             if (user.premium) {
                 usernameDisplay.innerHTML += ' <span class="premium-badge">Premium</span>';
-                linkDurationInfo.textContent = 'Links last for 2 months because you have premium';
+                linkDurationInfo.textContent = 'Links last for 4 months because you have premium';
             } else {
-                linkDurationInfo.textContent = 'Links last for 14 days';
+                linkDurationInfo.textContent = 'Links last for 1 month';
             }
             
             if (user.isDev) {

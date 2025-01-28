@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 }); 
 
-unction addNoCacheToFetch() {
+function addNoCacheToFetch() {
     const originalFetch = window.fetch;
     window.fetch = function() {
         if (arguments[0] instanceof Request) {

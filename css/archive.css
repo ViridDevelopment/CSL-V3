@@ -588,4 +588,28 @@ main {
     background-color: #094900; 
 }
 
+
+.image-container {
+    max-width: 200px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.7);
+    flex-shrink: 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    display: block;
+}
+
+.first-archive {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 /* dont fucking ask why there is 2 of these download button css, idk either */

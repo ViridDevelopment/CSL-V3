@@ -642,6 +642,11 @@ if (data.success) {
 
     // Call this function when the page loads
     updateMaxFileSize();
+
+    document.getElementById('ASrequest').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Handle form submission and send data to the backend
+    });
 });
 
 

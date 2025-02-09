@@ -697,6 +697,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+function logCyanRequests(request) {
+    console.log("Cyan request received:", request);
+}
+
+// Example of intercepting fetch requests
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+    if (args[0].includes('cyan')) { // Check if the request URL contains 'cyan'
+        logCyanRequests(args[0]);
+    }
+    return originalFetch.apply(this, args);
+};
+
 // animation for compression
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownContainers = document.querySelectorAll('.dropdown-container');

@@ -669,6 +669,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+    // Function to send requests to the backend
+    function sendRequestToBackend(action, data) {
+        fetch('https://api.aurorasigner.xyz/sign', { // Replace with your backend URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action, data }),
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
     // Accordion for Cyan Tweaks
     const acc = document.getElementsByClassName("accordion");
     for (let i = 0; i < acc.length; i++) {
@@ -681,6 +699,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
           panel.style.maxHeight = panel.scrollHeight + "px";
         }
+
+        // Send request when accordion is toggled
+        sendRequestToBackend('toggleAccordion', { id: this.id, active: this.classList.contains('active') });
       });
     }
 
@@ -693,22 +714,12 @@ document.addEventListener('DOMContentLoaded', function() {
             container.addEventListener('click', () => {
                 checkbox.checked = !checkbox.checked; // Toggle checkbox state
                 container.classList.toggle('active', checkbox.checked); // Toggle active class
+
+                // Send request when checkbox is toggled
+                sendRequestToBackend('toggleCheckbox', { id: checkbox.id, checked: checkbox.checked });
             });
         });
     });
-
-function logCyanRequests(request) {
-    console.log("Cyan request received:", request);
-}
-
-// Example of intercepting fetch requests
-const originalFetch = window.fetch;
-window.fetch = function(...args) {
-    if (args[0].includes('cyan')) { // Check if the request URL contains 'cyan'
-        logCyanRequests(args[0]);
-    }
-    return originalFetch.apply(this, args);
-};
 
 // animation for compression
 document.addEventListener('DOMContentLoaded', function() {
@@ -797,3 +808,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+function logCyanRequests(request) {
+    console.log("Cyan request received:", request);
+}
+
+// Example of intercepting fetch requests
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+    if (args[0].includes('cyan')) { // Check if the request URL contains 'cyan'
+        logCyanRequests(args[0]);
+    }
+    return originalFetch.apply(this, args);
+};

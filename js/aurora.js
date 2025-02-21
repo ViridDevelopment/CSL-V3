@@ -41,6 +41,12 @@ addNoCacheToFetch();
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("ASrequest");
+    const cyanNameInput = document.getElementById("cyan_name");
+    const cyanVersionInput = document.getElementById("cyan_version");
+    const cyanBundleIdInput = document.getElementById("cyan_bundle_id");
+    const cyanOverwriteCheckbox = document.getElementById("overwriteCheckbox");
+    const cyanIconInput = document.getElementById("cyan_icon");
+    const cyanCompressLevelSelect = document.getElementById("cyan_compress_level");
     const resultDiv = document.getElementById("result");
     const loader = document.getElementById("loader");
     const togglePassword = document.getElementById("togglePassword");
@@ -144,93 +150,101 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     if (form) {
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        if (!currentUser) {
-            showNotification("Please log in to sign IPAs", "error");
-            return;
-        }
-
-        // Logging user and file info
-        console.log("Signing request initiated by user:", currentUser.username);
-        const ipaFile = document.getElementById('ipa').files[0];
-        console.log("File selected for signing:", ipaFile ? ipaFile.name : "No file selected");
-
-        const maxSize = currentUser.premium ? 1.5 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
-
-        if (ipaFile && ipaFile.size > maxSize) {
-            showNotification(`File size exceeds the ${currentUser.premium ? '1.5 GB' : '1 GB'} limit. ${currentUser.premium ? '' : 'Upgrade to premium for larger files.'}`, "error");
-            return;
-        }
-
-        resultDiv.textContent = "";
-        loader.classList.remove("hidden");
-
-        const formData = new FormData(form);
-        formData.append("isPremium", currentUser.premium ? 'true' : 'false');
-        formData.append("expiryDays", currentUser.premium ? "120" : "30");
-        formData.append("username", currentUser.username);
-
-        const button = form.querySelector('button[type="submit"]');
-if (button) {
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    button.disabled = true;
-} else {
-    console.warn("Submit button not found in the form.");
-}
-
-        try {
-            console.log("Sending signing request to API...");
-            console.log("User premium status:", currentUser.premium);
-            
-            const response = await fetch("https://api.aurorasigner.xyz/sign", {
-                method: "POST",
-                body: formData
-            });
-
-            console.log("Response received from API with status:", response.status);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            if (!currentUser) {
+                showNotification("Please log in to sign IPAs", "error");
+                return;
             }
 
-            const result = await response.json();
-            console.log("Signing successful. API response:", result);
-            handleSigningSuccess(result);
-        } catch (error) {
-            console.error("Error during signing request:", error);
-            handleSigningError(error);
-        } finally {
-            button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign IPA';
-            button.disabled = false;
-        }
-    });
-}
+            // Logging user and file info
+            console.log("Signing request initiated by user:", currentUser.username);
+            const ipaFile = document.getElementById('ipa').files[0];
+            console.log("File selected for signing:", ipaFile ? ipaFile.name : "No file selected");
 
-function handleSigningSuccess(data) {
-    loader.classList.add("hidden");
-    console.log("Handling signing success. Data:", data);
-    
-    if (data.install_url) {
-        const installLink = document.createElement("a");
-        
-        if (data.install_url.includes('loot-link.com')) {
-            console.log("Processing LootLabs URL:", data.install_url);
-            installLink.href = data.install_url;
-        } else {
-            console.log("Processing direct install URL:", data.install_url);
-            installLink.href = data.install_url;
-        }
-        
-        installLink.textContent = "Install App";
-        installLink.className = "install-link";
-        resultDiv.appendChild(installLink);
-        showNotification("IPA signed successfully!", "success");
-    } else {
-        console.error("Failed to obtain install link from response data.");
-        throw new Error("Unable to get the install link");
+            const maxSize = currentUser.premium ? 1.5 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
+
+            if (ipaFile && ipaFile.size > maxSize) {
+                showNotification(`File size exceeds the ${currentUser.premium ? '1.5 GB' : '1 GB'} limit. ${currentUser.premium ? '' : 'Upgrade to premium for larger files.'}`, "error");
+                return;
+            }
+
+            resultDiv.textContent = "";
+            loader.classList.remove("hidden");
+
+            const formData = new FormData(form);
+            formData.append("isPremium", currentUser.premium ? 'true' : 'false');
+            formData.append("expiryDays", currentUser.premium ? "120" : "30");
+            formData.append("username", currentUser.username);
+            formData.append("cyan_name", cyanNameInput.value);
+            formData.append("cyan_version", cyanVersionInput.value);
+            formData.append("cyan_bundle_id", cyanBundleIdInput.value);
+            formData.append("cyan_overwrite", cyanOverwriteCheckbox.checked);
+            if (cyanIconInput.files.length > 0) {
+                formData.append("cyan_icon", cyanIconInput.files[0]);
+            }
+            formData.append("cyan_compress_level", cyanCompressLevelSelect.value);
+
+            const button = form.querySelector('button[type="submit"]');
+            if (button) {
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                button.disabled = true;
+            } else {
+                console.warn("Submit button not found in the form.");
+            }
+
+            try {
+                console.log("Sending signing request to API...");
+                console.log("User premium status:", currentUser.premium);
+                
+                const response = await fetch("https://api.aurorasigner.xyz/sign", {
+                    method: "POST",
+                    body: formData
+                });
+
+                console.log("Response received from API with status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log("Signing successful. API response:", result);
+                handleSigningSuccess(result);
+            } catch (error) {
+                console.error("Error during signing request:", error);
+                handleSigningError(error);
+            } finally {
+                button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign IPA';
+                button.disabled = false;
+            }
+        });
     }
-}
+
+    function handleSigningSuccess(data) {
+        loader.classList.add("hidden");
+        console.log("Handling signing success. Data:", data);
+        
+        if (data.install_url) {
+            const installLink = document.createElement("a");
+            
+            if (data.install_url.includes('loot-link.com')) {
+                console.log("Processing LootLabs URL:", data.install_url);
+                installLink.href = data.install_url;
+            } else {
+                console.log("Processing direct install URL:", data.install_url);
+                installLink.href = data.install_url;
+            }
+            
+            installLink.textContent = "Install App";
+            installLink.className = "install-link";
+            resultDiv.appendChild(installLink);
+            showNotification("IPA signed successfully!", "success");
+        } else {
+            console.error("Failed to obtain install link from response data.");
+            throw new Error("Unable to get the install link");
+        }
+    }
 
     async function handleSigningError(error) {
         console.error("Signing process failed:", error);
@@ -256,28 +270,28 @@ function handleSigningSuccess(data) {
         }
     }
 
-function handleRegistrationError(error) {
-    console.error("Registration process failed:", error);
+    function handleRegistrationError(error) {
+        console.error("Registration process failed:", error);
 
-    loader.classList.add("hidden");
+        loader.classList.add("hidden");
 
-    // If error.response exists and it's a validation error (status 400)
-    if (error.response && error.response.status === 400) {
-        error.response.json().then((data) => {
-            const errorMessage = data.error || "An error occurred. Please try again.";
-            resultDiv.textContent = `Error: ${errorMessage}`;
-            showNotification(errorMessage, "error");
-        }).catch(() => {
-            // In case parsing the error message fails
-            resultDiv.textContent = "Error: Failed to register. Please contact support.";
-            showNotification("Failed to register. Please contact support.", "error");
-        });
-    } else {
-        // For any other kind of error (e.g., network error or unexpected server error)
-        resultDiv.textContent = "Error: Internal server error. Please try again later.";
-        showNotification("Internal server error", "error");
+        // If error.response exists and it's a validation error (status 400)
+        if (error.response && error.response.status === 400) {
+            error.response.json().then((data) => {
+                const errorMessage = data.error || "An error occurred. Please try again.";
+                resultDiv.textContent = `Error: ${errorMessage}`;
+                showNotification(errorMessage, "error");
+            }).catch(() => {
+                // In case parsing the error message fails
+                resultDiv.textContent = "Error: Failed to register. Please contact support.";
+                showNotification("Failed to register. Please contact support.", "error");
+            });
+        } else {
+            // For any other kind of error (e.g., network error or unexpected server error)
+            resultDiv.textContent = "Error: Internal server error. Please try again later.";
+            showNotification("Internal server error", "error");
+        }
     }
-}
 
     function showNotification(message, type) {
         const notification = document.createElement("div");
@@ -385,7 +399,7 @@ function handleRegistrationError(error) {
         });
     }
 
-        async function registerUser(username, password) {
+    async function registerUser(username, password) {
         try {
             console.log('Attempting register with:', username, password);
             const response = await fetch('https://admin.aurorasigner.xyz/api.js', {
@@ -394,22 +408,22 @@ function handleRegistrationError(error) {
                 body: JSON.stringify({ action: 'register', username, password }),
             });
             const data = await response.json();
-console.log(data);
-if (data.success) {
-    showNotification('Registration successful. You can now log in.', 'success');
-    // Instead of calling toggleAuthMode, we'll update the UI directly
-    isLoginMode = true;
-    authTitle.textContent = "Login";
-    authSubmit.textContent = "Login";
-    authToggle.innerHTML = 'Don\'t have an account? <a href="#">Sign Up</a>';
-    privacyPolicyAgreement.style.display = "none";
-    agreePrivacyPolicyCheckbox.required = false;
-    return true;
-} else {
-    console.error('Registration failed:', data); // Logs the full error details
-    showNotification(data.error || 'Registration failed. Please try again.', 'error');
-    return false;
-}Ï
+            console.log(data);
+            if (data.success) {
+                showNotification('Registration successful. You can now log in.', 'success');
+                // Instead of calling toggleAuthMode, we'll update the UI directly
+                isLoginMode = true;
+                authTitle.textContent = "Login";
+                authSubmit.textContent = "Login";
+                authToggle.innerHTML = 'Don\'t have an account? <a href="#">Sign Up</a>';
+                privacyPolicyAgreement.style.display = "none";
+                agreePrivacyPolicyCheckbox.required = false;
+                return true;
+            } else {
+                console.error('Registration failed:', data); // Logs the full error details
+                showNotification(data.error || 'Registration failed. Please try again.', 'error');
+                return false;
+            }
         } catch (error) {
             console.error('Registration error:', error);
             showNotification('An error occurred during registration. Please try again.', 'error');

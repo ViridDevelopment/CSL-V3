@@ -41,12 +41,6 @@ addNoCacheToFetch();
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("ASrequest");
-    const cyanNameInput = document.getElementById("cyan_name");
-    const cyanVersionInput = document.getElementById("cyan_version");
-    const cyanBundleIdInput = document.getElementById("cyan_bundle_id");
-    const cyanOverwriteCheckbox = document.getElementById("overwriteCheckbox");
-    const cyanIconInput = document.getElementById("cyan_icon");
-    const cyanCompressLevelSelect = document.getElementById("cyan_compress_level");
     const resultDiv = document.getElementById("result");
     const loader = document.getElementById("loader");
     const togglePassword = document.getElementById("togglePassword");
@@ -150,101 +144,93 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     if (form) {
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
-            if (!currentUser) {
-                showNotification("Please log in to sign IPAs", "error");
-                return;
-            }
-
-            // Logging user and file info
-            console.log("Signing request initiated by user:", currentUser.username);
-            const ipaFile = document.getElementById('ipa').files[0];
-            console.log("File selected for signing:", ipaFile ? ipaFile.name : "No file selected");
-
-            const maxSize = currentUser.premium ? 1.5 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
-
-            if (ipaFile && ipaFile.size > maxSize) {
-                showNotification(`File size exceeds the ${currentUser.premium ? '1.5 GB' : '1 GB'} limit. ${currentUser.premium ? '' : 'Upgrade to premium for larger files.'}`, "error");
-                return;
-            }
-
-            resultDiv.textContent = "";
-            loader.classList.remove("hidden");
-
-            const formData = new FormData(form);
-            formData.append("isPremium", currentUser.premium ? 'true' : 'false');
-            formData.append("expiryDays", currentUser.premium ? "120" : "30");
-            formData.append("username", currentUser.username);
-            formData.append("cyan_name", cyanNameInput.value);
-            formData.append("cyan_version", cyanVersionInput.value);
-            formData.append("cyan_bundle_id", cyanBundleIdInput.value);
-            formData.append("cyan_overwrite", cyanOverwriteCheckbox.checked);
-            if (cyanIconInput.files.length > 0) {
-                formData.append("cyan_icon", cyanIconInput.files[0]);
-            }
-            formData.append("cyan_compress_level", cyanCompressLevelSelect.value);
-
-            const button = form.querySelector('button[type="submit"]');
-            if (button) {
-                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                button.disabled = true;
-            } else {
-                console.warn("Submit button not found in the form.");
-            }
-
-            try {
-                console.log("Sending signing request to API...");
-                console.log("User premium status:", currentUser.premium);
-                
-                const response = await fetch("https://api.aurorasigner.xyz/sign", {
-                    method: "POST",
-                    body: formData
-                });
-
-                console.log("Response received from API with status:", response.status);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log("Signing successful. API response:", result);
-                handleSigningSuccess(result);
-            } catch (error) {
-                console.error("Error during signing request:", error);
-                handleSigningError(error);
-            } finally {
-                button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign IPA';
-                button.disabled = false;
-            }
-        });
-    }
-
-    function handleSigningSuccess(data) {
-        loader.classList.add("hidden");
-        console.log("Handling signing success. Data:", data);
-        
-        if (data.install_url) {
-            const installLink = document.createElement("a");
-            
-            if (data.install_url.includes('loot-link.com')) {
-                console.log("Processing LootLabs URL:", data.install_url);
-                installLink.href = data.install_url;
-            } else {
-                console.log("Processing direct install URL:", data.install_url);
-                installLink.href = data.install_url;
-            }
-            
-            installLink.textContent = "Install App";
-            installLink.className = "install-link";
-            resultDiv.appendChild(installLink);
-            showNotification("IPA signed successfully!", "success");
-        } else {
-            console.error("Failed to obtain install link from response data.");
-            throw new Error("Unable to get the install link");
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        if (!currentUser) {
+            showNotification("Please log in to sign IPAs", "error");
+            return;
         }
+
+        // Logging user and file info
+        console.log("Signing request initiated by user:", currentUser.username);
+        const ipaFile = document.getElementById('ipa').files[0];
+        console.log("File selected for signing:", ipaFile ? ipaFile.name : "No file selected");
+
+        const maxSize = currentUser.premium ? 1.5 * 1024 * 1024 * 1024 : 1024 * 1024 * 1024;
+
+        if (ipaFile && ipaFile.size > maxSize) {
+            showNotification(`File size exceeds the ${currentUser.premium ? '1.5 GB' : '1 GB'} limit. ${currentUser.premium ? '' : 'Upgrade to premium for larger files.'}`, "error");
+            return;
+        }
+
+        resultDiv.textContent = "";
+        loader.classList.remove("hidden");
+
+        const formData = new FormData(form);
+        formData.append("isPremium", currentUser.premium ? 'true' : 'false');
+        formData.append("expiryDays", currentUser.premium ? "120" : "30");
+        formData.append("username", currentUser.username);
+
+        const button = form.querySelector('button[type="submit"]');
+if (button) {
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    button.disabled = true;
+} else {
+    console.warn("Submit button not found in the form.");
+}
+
+        try {
+            console.log("Sending signing request to API...");
+            console.log("User premium status:", currentUser.premium);
+            
+            const response = await fetch("https://api.aurorasigner.xyz/sign", {
+                method: "POST",
+                body: formData
+            });
+
+            console.log("Response received from API with status:", response.status);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Signing successful. API response:", result);
+            handleSigningSuccess(result);
+        } catch (error) {
+            console.error("Error during signing request:", error);
+            handleSigningError(error);
+        } finally {
+            button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign IPA';
+            button.disabled = false;
+        }
+    });
+}
+
+function handleSigningSuccess(data) {
+    loader.classList.add("hidden");
+    console.log("Handling signing success. Data:", data);
+    
+    if (data.install_url) {
+        const installLink = document.createElement("a");
+        
+        if (data.install_url.includes('loot-link.com')) {
+            console.log("Processing LootLabs URL:", data.install_url);
+            installLink.href = data.install_url;
+        } else {
+            console.log("Processing direct install URL:", data.install_url);
+            installLink.href = data.install_url;
+        }
+        
+        installLink.textContent = "Install App";
+        installLink.className = "install-link";
+        resultDiv.appendChild(installLink);
+        showNotification("IPA signed successfully!", "success");
+    } else {
+        console.error("Failed to obtain install link from response data.");
+        throw new Error("Unable to get the install link");
     }
+}
 
     async function handleSigningError(error) {
         console.error("Signing process failed:", error);
@@ -270,28 +256,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function handleRegistrationError(error) {
-        console.error("Registration process failed:", error);
+function handleRegistrationError(error) {
+    console.error("Registration process failed:", error);
 
-        loader.classList.add("hidden");
+    loader.classList.add("hidden");
 
-        // If error.response exists and it's a validation error (status 400)
-        if (error.response && error.response.status === 400) {
-            error.response.json().then((data) => {
-                const errorMessage = data.error || "An error occurred. Please try again.";
-                resultDiv.textContent = `Error: ${errorMessage}`;
-                showNotification(errorMessage, "error");
-            }).catch(() => {
-                // In case parsing the error message fails
-                resultDiv.textContent = "Error: Failed to register. Please contact support.";
-                showNotification("Failed to register. Please contact support.", "error");
-            });
-        } else {
-            // For any other kind of error (e.g., network error or unexpected server error)
-            resultDiv.textContent = "Error: Internal server error. Please try again later.";
-            showNotification("Internal server error", "error");
-        }
+    // If error.response exists and it's a validation error (status 400)
+    if (error.response && error.response.status === 400) {
+        error.response.json().then((data) => {
+            const errorMessage = data.error || "An error occurred. Please try again.";
+            resultDiv.textContent = `Error: ${errorMessage}`;
+            showNotification(errorMessage, "error");
+        }).catch(() => {
+            // In case parsing the error message fails
+            resultDiv.textContent = "Error: Failed to register. Please contact support.";
+            showNotification("Failed to register. Please contact support.", "error");
+        });
+    } else {
+        // For any other kind of error (e.g., network error or unexpected server error)
+        resultDiv.textContent = "Error: Internal server error. Please try again later.";
+        showNotification("Internal server error", "error");
     }
+}
 
     function showNotification(message, type) {
         const notification = document.createElement("div");
@@ -399,7 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    async function registerUser(username, password) {
+        async function registerUser(username, password) {
         try {
             console.log('Attempting register with:', username, password);
             const response = await fetch('https://admin.aurorasigner.xyz/api.js', {
@@ -408,22 +394,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({ action: 'register', username, password }),
             });
             const data = await response.json();
-            console.log(data);
-            if (data.success) {
-                showNotification('Registration successful. You can now log in.', 'success');
-                // Instead of calling toggleAuthMode, we'll update the UI directly
-                isLoginMode = true;
-                authTitle.textContent = "Login";
-                authSubmit.textContent = "Login";
-                authToggle.innerHTML = 'Don\'t have an account? <a href="#">Sign Up</a>';
-                privacyPolicyAgreement.style.display = "none";
-                agreePrivacyPolicyCheckbox.required = false;
-                return true;
-            } else {
-                console.error('Registration failed:', data); // Logs the full error details
-                showNotification(data.error || 'Registration failed. Please try again.', 'error');
-                return false;
-            }
+console.log(data);
+if (data.success) {
+    showNotification('Registration successful. You can now log in.', 'success');
+    // Instead of calling toggleAuthMode, we'll update the UI directly
+    isLoginMode = true;
+    authTitle.textContent = "Login";
+    authSubmit.textContent = "Login";
+    authToggle.innerHTML = 'Don\'t have an account? <a href="#">Sign Up</a>';
+    privacyPolicyAgreement.style.display = "none";
+    agreePrivacyPolicyCheckbox.required = false;
+    return true;
+} else {
+    console.error('Registration failed:', data); // Logs the full error details
+    showNotification(data.error || 'Registration failed. Please try again.', 'error');
+    return false;
+}Ï
         } catch (error) {
             console.error('Registration error:', error);
             showNotification('An error occurred during registration. Please try again.', 'error');
@@ -467,6 +453,41 @@ document.addEventListener("DOMContentLoaded", function () {
         // Dispatch a custom event when login status changes
         document.dispatchEvent(new Event('loginStatusChanged'));
         updateMaxFileSize();
+    }
+
+    function toggleAdminPanel() {
+        const adminPanel = document.getElementById('adminPanel');
+        if (!adminPanel) {
+            console.error('Admin panel element not found');
+            return;
+        }
+        console.log('Admin panel before toggle:', adminPanel.classList.contains('hidden'));
+        adminPanel.classList.toggle('hidden');
+        console.log('Admin panel after toggle:', adminPanel.classList.contains('hidden'));
+        
+        if (!adminPanel.classList.contains('hidden')) {
+            console.log('Admin panel should be visible now');
+            adminPanel.style.display = 'block'; // Force display
+            loadUsers();
+            addCloseButtonToAdminPanel();
+        } else {
+            console.log('Admin panel should be hidden now');
+            adminPanel.style.display = 'none'; // Force hide
+        }
+    }
+
+    function addCloseButtonToAdminPanel() {
+        const adminPanel = document.getElementById('adminPanel');
+        if (!adminPanel) return;
+
+        let closeButton = adminPanel.querySelector('.close-button');
+        if (!closeButton) {
+            closeButton = document.createElement('button');
+            closeButton.className = 'close-button';
+            closeButton.innerHTML = '&times;';
+            closeButton.onclick = toggleAdminPanel;
+            adminPanel.insertBefore(closeButton, adminPanel.firstChild);
+        }
     }
 
     function checkAdminPanel() {
@@ -563,9 +584,9 @@ document.addEventListener("DOMContentLoaded", function () {
             
             if (user.premium) {
                 usernameDisplay.innerHTML += ' <span class="premium-badge">Premium</span>';
-                linkDurationInfo.textContent = 'Links last for 4 months because you have premium';
+                linkDurationInfo.textContent = 'Links last for 2 months because you have premium';
             } else {
-                linkDurationInfo.textContent = 'Links last for 1 month';
+                linkDurationInfo.textContent = 'Links last for 14 days';
             }
             
             if (user.isDev) {
@@ -656,186 +677,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Call this function when the page loads
     updateMaxFileSize();
-
-    document.getElementById('ASrequest').addEventListener('submit', function(event) {
-        event.preventDefault();
-        // Handle form submission and send data to the backend
-    });
 });
-
-
-// tweaking area
-document.addEventListener('DOMContentLoaded', function() {
-    var customizationModal = document.getElementById("customizationMenuModal");
-    var customizationButton = document.getElementById("customizationMenuButton");
-    var closeSpan = customizationModal.getElementsByClassName("close")[0];
-
-    customizationButton.onclick = function() {
-        customizationModal.style.display = "block";
-        document.body.classList.add('modal-open'); // Add blur effect
-    }
-
-    closeSpan.onclick = function() {
-        customizationModal.style.display = "none";
-        document.body.classList.remove('modal-open'); // Remove blur effect
-    }
-
-    window.onclick = function(event) {
-        if (event.target == customizationModal) {
-            customizationModal.style.display = "none";
-            document.body.classList.remove('modal-open'); // Remove blur effect
-        }
-    }
-});
-
-    // Function to send requests to the backend
-    function sendRequestToBackend(action, data) {
-        fetch('https://api.aurorasigner.xyz/sign', { // Replace with your backend URL
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ action, data }),
-        })
-        .then(response => response.json())
-        .then(result => {
-            console.log('Success:', result);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    // Accordion for Cyan Tweaks
-    const acc = document.getElementsByClassName("accordion");
-    for (let i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        const panel = this.nextElementSibling;
-        const arrow = this.querySelector(".arrow");
-        if (panel.style.maxHeight) {
-          panel.style.maxHeight = null;
-        } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
-        }
-
-        // Send request when accordion is toggled
-        sendRequestToBackend('toggleAccordion', { id: this.id, active: this.classList.contains('active') });
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkboxContainers = document.querySelectorAll('.checkbox-container');
-    
-        checkboxContainers.forEach(container => {
-            const checkbox = container.querySelector('input[type="checkbox"]');
-            
-            container.addEventListener('click', () => {
-                checkbox.checked = !checkbox.checked; // Toggle checkbox state
-                container.classList.toggle('active', checkbox.checked); // Toggle active class
-
-                // Send request when checkbox is toggled
-                sendRequestToBackend('toggleCheckbox', { id: checkbox.id, checked: checkbox.checked });
-            });
-        });
-    });
-
-// animation for compression
-document.addEventListener('DOMContentLoaded', function() {
-    const dropdownContainers = document.querySelectorAll('.dropdown-container');
-
-    dropdownContainers.forEach(container => {
-        const button = container.querySelector('.dropdown-button');
-        const content = container.querySelector('.dropdown-content');
-
-        button.addEventListener('click', () => {
-            container.classList.toggle('active');
-        });
-
-        // Close the dropdown if clicked outside
-        window.addEventListener('click', (event) => {
-            if (!container.contains(event.target)) {
-                container.classList.remove('active');
-            }
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.querySelector('.dropdown-toggle-button');
-    const dropdownContainer = document.querySelector('.dropdown-container');
-
-    if (toggleButton && dropdownContainer) {
-        toggleButton.addEventListener('click', () => {
-            dropdownContainer.classList.toggle('hidden');
-        });
-
-        const dropdownOptions = document.querySelectorAll('.dropdown-option');
-
-        dropdownOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                dropdownOptions.forEach(opt => opt.classList.remove('active'));
-                option.classList.add('active');
-                const selectedValue = option.getAttribute('data-value');
-                console.log('Selected Compression Level:', selectedValue);
-                dropdownContainer.classList.add('hidden'); // Hide after selection
-            });
-        });
-    } else {
-        console.error('Toggle button or dropdown container not found');
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const dropdownOptions = document.querySelectorAll('.dropdown-option');
-
-    dropdownOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            dropdownOptions.forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-            // You can handle the selected value here
-            const selectedValue = option.getAttribute('data-value');
-            console.log('Selected Compression Level:', selectedValue);
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const overwriteContainer = document.getElementById('cyan_overwrite_container');
-    const checkbox = document.getElementById('overwriteCheckbox');
-
-    // Initialize the container state
-    overwriteContainer.classList.toggle('active', checkbox.checked);
-    overwriteContainer.classList.toggle('inactive', !checkbox.checked);
-
-    overwriteContainer.addEventListener('click', function() {
-        checkbox.checked = !checkbox.checked; // Toggle checkbox state
-        overwriteContainer.classList.toggle('active', checkbox.checked); // Toggle active class
-        overwriteContainer.classList.toggle('inactive', !checkbox.checked); // Toggle inactive class
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInputs = document.querySelectorAll('.custom-file-input input[type="file"]');
-
-    fileInputs.forEach((input) => {
-        input.addEventListener('change', function(event) {
-            const fileName = event.target.files[0] ? event.target.files[0].name : 'No file chosen';
-            const label = input.nextElementSibling; // Get the label next to the input
-            label.textContent = fileName; // Update the label text with the file name
-        });
-    });
-});
-
-function logCyanRequests(request) {
-    console.log("Cyan request received:", request);
-}
-
-// Example of intercepting fetch requests
-const originalFetch = window.fetch;
-window.fetch = function(...args) {
-    if (args[0].includes('cyan')) { // Check if the request URL contains 'cyan'
-        logCyanRequests(args[0]);
-    }
-    return originalFetch.apply(this, args);
-};

@@ -678,3 +678,4 @@ if (data.success) {
     // Call this function when the page loads
     updateMaxFileSize();
 });
+// just fucking work

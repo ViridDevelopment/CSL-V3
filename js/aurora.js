@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Sending signing request to API...");
                 console.log("User premium status:", currentUser.premium);
                 
-                const response = await fetch("https://api.aurorasigner.xyz/sign", {
+                const response = await fetch("https://api.cherrysideloading.xyz/sign", {
                     method: "POST",
                     body: formData
                 });

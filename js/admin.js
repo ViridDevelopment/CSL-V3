@@ -234,7 +234,7 @@ function checkAdminPanel() {
 
 async function revealPassword(id) {
     try {
-        const response = await fetch('https://admin.aurorasigner.xyz/api.js', {
+        const response = await fetch('https://admin.cherrysideloading.xyz/api.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'revealPassword', id }),
@@ -273,7 +273,7 @@ window.toggleAdminPanel = toggleAdminPanel;
 
 async function downloadLogs() {
     try {
-        const response = await fetch('https://admin.aurorasigner.xyz/api.js', {
+        const response = await fetch('https://admin.cherrysideloading.xyz/api.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'getLogsAndStats' }),
